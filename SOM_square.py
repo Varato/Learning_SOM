@@ -140,11 +140,11 @@ def find_winner(w, in_put):
 
 def sampling(data=None):
 	# samples from sides
-	r = np.random.random()
-	x = np.array([np.array([0,r]), np.array([r,0]), np.array([1,r]) ,np.array([r,1])])[np.random.choice(4)]
-	return x
+	# r = np.random.random()
+	# x = np.array([np.array([0,r]), np.array([r,0]), np.array([1,r]) ,np.array([r,1])])[np.random.choice(4)]
+	# return x
 	# samples in the area
-	# return np.random.random(2)
+	return np.random.random(2)
 
 if __name__=="__main__":
 	main()

@@ -2,12 +2,18 @@ import numpy as np
 import numpy.linalg as la
 import matplotlib.pyplot as plt
 from matplotlib import animation 
+import pickle
 import sys
 
-Train_data = np.transpose(np.loadtxt("TrData.txt", delimiter=","))
-Train_label = np.loadtxt("TrLabel.txt", delimiter=",")
-# 2d w
+try:
+	epoc_times = int(sys.argv[1]) 
+except IndexError:
+	epoc_times = 10
 
+Train_data = np.transpose(np.loadtxt("TrData.txt", delimiter=","))
+Train_labels = np.loadtxt("TrLabel.txt", delimiter=",")
+
+# 2d w
 N = 10
 M = 10
 
@@ -19,13 +25,13 @@ np.random.seed(2017)
 
 def main():
 	# creates artists instances
-	fig, ax = plt.subplots(figsize=[15,10])
+	fig, ax = plt.subplots(figsize=[7,7])
 
 	# generates new data
 	def mesh_gen():
 		# initializes the system
 		w, sigma0, eta0, T_max, tau1, tau2 = initialize()
-		for tt in range(10):
+		for tt in range(epoc_times):
 			print("epoch: {}".format(tt+1))
 			for t in range(T_max):
 				sigma , eta = time_evolution(t, sigma0, eta0, tau1, tau2)
@@ -42,8 +48,14 @@ def main():
 	for w, t in mesh_gen():
 		flushPrint("current t: ", t+1)
 
-	print(labeling(w))
+	# print(w[0,0,0])
+	labels = labeling(w)
+	with open("SOM.pkl", "wb") as f1:
+		pickle.dump(w, f1)
+	with open("labels.pkl", "wb") as f2:
+		pickle.dump(labels, f2)
 	show_mesh(w, ax)
+	plt.savefig("trained_map.png", dpi=300)
 	plt.show()
 
 
@@ -105,8 +117,8 @@ def labeling(w):
 				dist = la.norm(w[i,j] - Train_data[ii])
 				if dist <= minimum:
 					minimum = dist
-					label = Train_data[ii]
-			labeled_mat[i,j] = label[0]
+					label = Train_labels[ii]
+			labeled_mat[i,j] = label
 	return labeled_mat
 
 def show_mesh(w, ax):
@@ -128,6 +140,8 @@ def show_mesh(w, ax):
 	for j in range(1, M):
 		ax.plot([j*28, j*28],[0, 280], color="white")
 
+	ax.imshow(U, cmap="gray", interpolation="nearest")
+
 
 
 
@@ -138,7 +152,6 @@ def show_mesh(w, ax):
 	# 			for j in range(0, 28*M, 28):
 	# 				mesh_mat[i:(i+28), j:(j+28)] \
 	# 					= np.transpose(w[ii, jj].reshape(28,28))
-	ax.imshow(U, cmap="gray", interpolation="nearest")
 
 
 if __name__=="__main__":
