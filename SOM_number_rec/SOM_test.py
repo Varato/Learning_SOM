@@ -65,6 +65,8 @@ def main():
 def visualize():
 	w, labels, Test_data, Test_labels = load_data()
 	fig, ax = plt.subplots()
+	ax.set_xticks([])
+	ax.set_yticks([])
 
 	text = ax.text(0, -1, "")
 	img = ax.imshow(np.transpose(Test_data[0].reshape([28,28])), cmap = "gray", interpolation = "nearest")
@@ -75,11 +77,11 @@ def visualize():
 	def data_gen():
 		for i in range(Test_data.shape[0]):
 			img_vec = Test_data[i]
-			yield (img_vec, identify(w, labels, img_vec))
+			yield (img_vec, identify(w, labels, img_vec), int(Test_labels[i]))
 	def update(data):
-		img_vec, n = data
+		img_vec, n, m = data
 		img.set_data(np.transpose(img_vec.reshape(28,28)))
-		text.set_text("ans = {}".format(n))
+		text.set_text("ans = {}, label = {}, {}".format(n, m, "succeed" if n==m else "failed"))
 		return (img,text)
 
 
