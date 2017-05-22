@@ -81,7 +81,7 @@ def visualize():
 	def update(data):
 		img_vec, n, m = data
 		img.set_data(np.transpose(img_vec.reshape(28,28)))
-		text.set_text("ans = {}, label = {}, {}".format(n, m, "succeed" if n==m else "failed"))
+		text.set_text("ans = {}, label = {}: {}".format(n, m, "succeed" if n==m else "failed"))
 		return (img,text)
 
 
